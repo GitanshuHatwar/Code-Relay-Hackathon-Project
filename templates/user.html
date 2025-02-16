@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduTech Pro Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-red: #e31837;
+            --dark-red: #c41230;
+            --light-grey: #f5f5f5;
+            --medium-grey: #666;
+            --pure-white: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: var(--light-grey);
+            color: #333;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: var(--primary-red);
+            position: fixed;
+            height: 100vh;
+            padding: 2rem 1.5rem;
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .brand-icon {
+            font-size: 2rem;
+            color: var(--pure-white);
+        }
+
+        .brand-text {
+            color: var(--pure-white);
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            color: var(--pure-white);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-item:hover {
+            background: rgba(255,255,255,0.15);
+            transform: translateX(5px);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 280px;
+            padding: 2rem 3rem;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: var(--pure-white);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border-left: 4px solid var(--primary-red);
+            transition: transform 0.2s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-red);
+            margin: 0.5rem 0;
+        }
+
+        /* File Section */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 2rem 0;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            color: var(--primary-red);
+            font-weight: 600;
+        }
+
+        .file-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .file-card {
+            background: var(--pure-white);
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            transition: all 0.2s ease;
+            border: 1px solid #eee;
+        }
+
+        .file-card:hover {
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+
+        .file-meta {
+            display: flex;
+            justify-content: space-between;
+            color: var(--medium-grey);
+            font-size: 0.9rem;
+            margin: 0.5rem 0;
+        }
+
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--primary-red);
+            color: white;
+            padding: 0.5rem 1.2rem;
+            border-radius: 6px;
+            text-decoration: none;
+            transition: background 0.2s ease;
+        }
+
+        .download-btn:hover {
+            background: var(--dark-red);
+        }
+
+        /* TTS Section */
+        .tts-card {
+            background: var(--pure-white);
+            padding: 2rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        .upload-label {
+            display: block;
+            border: 2px dashed var(--primary-red);
+            padding: 2rem;
+            text-align: center;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: rgba(227,24,55,0.05);
+        }
+
+        .upload-label:hover {
+            background: rgba(227,24,55,0.08);
+        }
+
+        /* Info Boxes */
+        .info-box {
+            background: rgba(227,24,55,0.08);
+            border-left: 4px solid var(--primary-red);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 2rem 0;
+        }
+
+        .info-box h3 {
+            color: var(--primary-red);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .info-box p {
+            color: var(--medium-grey);
+            line-height: 1.6;
+        }
+
+        /* Mobile Menu */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 1.5rem;
+            }
+
+            .menu-icon {
+                display: block !important;
+            }
+        }
+
+        /*This is for loader graphics*/
+                    /* Full-screen translucent overlay */
+#preloader {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.8); /* White with 80% opacity */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    backdrop-filter: blur(5px); /* Slight blur effect */
+    transition: opacity 0.5s ease-out;
+}
+
+        /* Loader container */
+        .loader {
+        width: 50px; /* Width of the loader */
+        aspect-ratio: 1.154; /* Maintains the hexagonal shape */
+        display: grid; /* Uses CSS grid to position pseudo-elements */
+        color: #000; /* Color of the loader */
+
+        /* Background effect to create hexagon-like rotating shapes */
+        background:
+            linear-gradient(to bottom left, #0000 calc(50% - 1px), currentColor 0 calc(50% + 1px), #0000 0) right / 50% 100%,
+            linear-gradient(to bottom right, #0000 calc(50% - 1px), currentColor 0 calc(50% + 1px), #0000 0) left / 50% 100%,
+            linear-gradient(currentColor 0 0) bottom / 100% 2px;
+        background-repeat: no-repeat; /* Prevent background from repeating */
+
+        transform-origin: 50% 66%; /* Set rotation pivot */
+        animation: l5 4s infinite linear; /* Apply infinite rotation */
+        }
+
+        /* Creates two additional rotating layers */
+        .loader::before,
+        .loader::after {
+        content: ""; /* Empty content for pseudo-elements */
+        grid-area: 1/1; /* Position inside the main grid */
+        background: inherit; /* Inherit background properties from .loader */
+        transform-origin: inherit; /* Use the same rotation pivot */
+        animation: inherit; /* Inherit animation from the main loader */
+        }
+
+        /* Modify the animation speed for ::after */
+        .loader::after {
+        animation-duration: 2s; /* Rotate at half the speed of the main loader */
+        }
+
+        /* Animation: Rotates the loader continuously */
+        @keyframes l5 {
+        100% { transform: rotate(1turn); } /* Full rotation (360°) */
+        }
+
+        /* Hide loader smoothly */
+        .hide {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+/* ======= Enhanced CSS ======= */
+/* Keep existing styles and add these modifications */
+
+/* Sidebar Enhancements */
+.sidebar {
+    background: linear-gradient(135deg, rgba(227,24,55,1) 0%, rgba(195,18,48,1) 100%);
+    box-shadow: 4px 0 15px rgba(0,0,0,0.1);
+}
+
+.nav-item i {
+    font-size: 1.2em;
+    width: 30px;
+    transition: transform 0.2s ease;
+}
+
+.nav-item:hover i {
+    transform: scale(1.1);
+}
+
+/* Stats Grid Enhancements */
+.stats-grid {
+    gap: 2rem;
+}
+
+.stat-card {
+    position: relative;
+    overflow: hidden;
+    border-left: none;
+    background: linear-gradient(45deg, var(--pure-white) 70%, rgba(227,24,55,0.05));
+}
+
+.stat-card::before {
+    content: "";
+    position: absolute;
+    top: -50px;
+    right: -50px;
+    width: 100px;
+    height: 100px;
+    background: rgba(227,24,55,0.08);
+    border-radius: 50%;
+}
+
+.stat-value {
+    font-size: 2.8rem;
+    position: relative;
+    z-index: 1;
+}
+
+.stat-meta {
+    color: var(--medium-grey);
+    font-size: 0.9em;
+    margin-top: 0.5rem;
+}
+
+/* File Card Enhancements */
+.file-card {
+    position: relative;
+    padding: 1.8rem;
+    border: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.file-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(120deg, rgba(227,24,55,0.03) 0%, transparent 100%);
+    pointer-events: none;
+}
+
+.file-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+}
+
+.file-card h4 {
+    font-size: 1.1em;
+    margin-bottom: 1rem;
+    color: var(--primary-red);
+    position: relative;
+    padding-left: 30px;
+}
+
+.file-card h4::before {
+    content: "📄";
+    position: absolute;
+    left: 0;
+    top: -2px;
+}
+
+/* TTS Section Enhancements */
+.upload-label {
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.upload-label:hover {
+    border-color: var(--dark-red);
+    transform: scale(1.02);
+}
+
+.upload-label::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 50px;
+    height: 50px;
+    background: rgba(227,24,55,0.1);
+    border-radius: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    transition: transform 0.3s ease;
+}
+
+.upload-label:active::after {
+    transform: translate(-50%, -50%) scale(3);
+    opacity: 0;
+}
+
+/* Button Enhancements */
+.download-btn {
+    position: relative;
+    overflow: hidden;
+    border: none;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.download-btn::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255,255,255,0.1);
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+}
+
+.download-btn:hover::after {
+    transform: translateX(0);
+}
+
+/* Info Box Enhancements */
+.info-box {
+    border-left-width: 5px;
+    background: rgba(227,24,55,0.05);
+    backdrop-filter: blur(2px);
+}
+
+.info-box h3 {
+    font-size: 1.3em;
+    letter-spacing: -0.5px;
+}
+
+/* Loader Enhancements */
+.loader {
+    color: var(--primary-red);
+    width: 60px;
+}
+
+/* Global Animations */
+@keyframes subtleFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+
+/* Typography Enhancements */
+body {
+    line-height: 1.6;
+}
+
+h2.section-title {
+    font-size: 1.4em;
+    letter-spacing: -0.3px;
+    position: relative;
+    padding-left: 10px;
+}
+
+h2.section-title::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 70%;
+    background: var(--primary-red);
+    border-radius: 2px;
+}
+
+/* Add smooth transitions */
+* {
+    transition: background-color 0.3s ease, 
+                color 0.3s ease, 
+                transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+/* ======= Ultra Premium Enhancements ======= */
+/* Maintained all original features - pure visual upgrades */
+
+/* Sidebar Luxury */
+.sidebar {
+    background: linear-gradient(155deg, 
+        var(--primary-red) 0%, 
+        var(--dark-red) 100%);
+    box-shadow: 8px 0 30px rgba(0,0,0,0.15);
+    border-right: 1px solid rgba(255,255,255,0.1);
+}
+
+.nav-item {
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(4px);
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+}
+
+.nav-item:hover {
+    background: rgba(255,255,255,0.12);
+    box-shadow: 3px 0 15px rgba(0,0,0,0.1);
+}
+
+.nav-item::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255,255,255,0.2),
+        transparent
+    );
+    transition: left 0.6s ease;
+}
+
+.nav-item:hover::after {
+    left: 100%;
+}
+
+/* Stats Card Sophistication */
+.stat-card {
+    border-left: none;
+    background: linear-gradient(
+        135deg,
+        var(--pure-white) 45%,
+        rgba(227,24,55,0.03)
+    );
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(227,24,55,0.1);
+}
+
+.stat-card::before {
+    content: "";
+    position: absolute;
+    bottom: -20%;
+    right: -10%;
+    width: 60px;
+    height: 60px;
+    background: var(--primary-red);
+    opacity: 0.08;
+    border-radius: 18px;
+    transform: rotate(45deg);
+}
+
+.stat-card::after {
+    content: "";
+    position: absolute;
+    top: -20%;
+    left: -10%;
+    width: 80px;
+    height: 80px;
+    background: var(--primary-red);
+    opacity: 0.05;
+    border-radius: 24px;
+    transform: rotate(45deg);
+}
+
+.stat-value {
+    position: relative;
+    z-index: 2;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+/* File Card Deluxe */
+.file-card {
+    position: relative;
+    background: linear-gradient(
+        to bottom right,
+        var(--pure-white) 60%,
+        rgba(227,24,55,0.02)
+    );
+    border: 1px solid rgba(227,24,55,0.08);
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.file-card:hover {
+    box-shadow: 0 12px 24px -8px rgba(227,24,55,0.12);
+}
+
+.file-card h4 {
+    position: relative;
+    padding-left: 34px;
+}
+
+.file-card h4::before {
+    content: " ";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 24px;
+    height: 24px;
+    background: rgba(227,24,55,0.1);
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='currentColor' d='M14 2H6c-1.11 0-2 .89-2 2v16c0 1.11.89 2 2 2h12c1.11 0 2-.89 2-2V8l-6-6m4 18H6V4h7v5h5v11m-3-8.07V19H7.05l4.95-4.95l2.04 2.05l1.41-1.41l-2.05-2.06L15 11.93Z'/%3E%3C/svg%3E");
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='currentColor' d='M14 2H6c-1.11 0-2 .89-2 2v16c0 1.11.89 2 2 2h12c1.11 0 2-.89 2-2V8l-6-6m4 18H6V4h7v5h5v11m-3-8.07V19H7.05l4.95-4.95l2.04 2.05l1.41-1.41l-2.05-2.06L15 11.93Z'/%3E%3C/svg%3E");
+}
+
+/* TTS Upload Elegance */
+.upload-label {
+    border-width: 3px;
+    background: repeating-linear-gradient(
+        -45deg,
+        rgba(227,24,55,0.05),
+        rgba(227,24,55,0.05) 10px,
+        rgba(227,24,55,0.03) 10px,
+        rgba(227,24,55,0.03) 20px
+    );
+    transition: all 0.3s ease;
+}
+
+.upload-label:hover {
+    background-size: 200% 200%;
+    animation: gradientFlow 8s linear infinite;
+}
+
+@keyframes gradientFlow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Button Refinement */
+.download-btn {
+    position: relative;
+    overflow: hidden;
+    padding: 0.7rem 1.5rem;
+    font-weight: 600;
+    border-radius: 8px;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.download-btn::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        120deg,
+        transparent,
+        rgba(255,255,255,0.25),
+        transparent
+    );
+    transition: left 0.6s ease;
+}
+
+.download-btn:hover::before {
+    left: 100%;
+}
+
+/* Global Micro-Interactions */
+
+* {
+    transition: 
+        transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+        box-shadow 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+        background 0.4s ease;
+}
+
+/* Section Header Glam */
+.section-header {
+    border-bottom: 2px solid rgba(227,24,55,0.1);
+    padding-bottom: 1rem;
+}
+
+.section-title {
+    position: relative;
+    padding-left: 1rem;
+}
+
+.section-title::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    width: 35px;
+    height: 3px;
+    background: var(--primary-red);
+    border-radius: 2px;
+}
+
+/* Info Box Luxury */
+.info-box {
+    background: linear-gradient(
+        to right,
+        rgba(227,24,55,0.03) 0%,
+        rgba(227,24,55,0.01) 100%
+    );
+    border-left: 4px solid var(--primary-red);
+    backdrop-filter: blur(4px);
+}
+
+/* Enhanced File Card Hover Effects */
+.file-card {
+    position: relative;
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    transform-style: preserve-3d;
+    perspective: 1000px;
+}
+
+.file-card:hover {
+    transform: translateY(-8px) translateZ(20px);
+    box-shadow: 0 15px 30px -10px rgba(227, 24, 55, 0.2);
+}
+
+/* Gradient Overlay Effect */
+.file-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        45deg,
+        rgba(227, 24, 55, 0.08) 0%,
+        rgba(255, 255, 255, 0.1) 100%
+    );
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    border-radius: 8px;
+    pointer-events: none;
+}
+
+.file-card:hover::after {
+    opacity: 1;
+}
+
+/* Animated Border Effect */
+.file-card::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: var(--primary-red);
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.file-card:hover::before {
+    transform: scaleX(1);
+    transform-origin: left;
+}
+
+/* Content Micro-Interactions */
+.file-card h4 {
+    transition: transform 0.3s ease;
+}
+
+.file-card:hover h4 {
+    transform: translateX(8px);
+}
+
+.file-meta {
+    transition: opacity 0.3s ease;
+}
+
+.file-card:hover .file-meta {
+    opacity: 0.9;
+}
+
+/* Download Button Enhancement */
+.download-btn {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.download-btn::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    bottom: -50%;
+    left: -50%;
+    background: linear-gradient(
+        to right,
+        rgba(255, 255, 255, 0) 20%,
+        rgba(255, 255, 255, 0.2) 50%,
+        rgba(255, 255, 255, 0) 80%
+    );
+    transform: rotateZ(60deg) translate(-1em, 7.5em);
+    animation: buttonShine 3s infinite;
+}
+
+@keyframes buttonShine {
+    100% {
+        transform: rotateZ(60deg) translate(1em, -7.5em);
+    }
+}
+  
+  
+  </style>
+</head>
+<body>
+    <!-- Translucent loading screen -->
+        <div id="preloader">
+            <div class="loader"></div>
+        </div>
+
+    <!-- Mobile Menu Icon -->
+    <div class="menu-icon" style="display: none;">☰</div>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="brand">
+            <i class="fas fa-graduation-cap brand-icon"></i>
+            <div class="brand-text">EduTech Pro</div>
+        </div>
+
+        <nav>
+            <a href="#" class="nav-item">
+                <i class="fas fa-home"></i>
+                Dashboard
+            </a>
+            <a href="#" class="nav-item">
+                <i class="fas fa-folder"></i>
+                My Files
+            </a>
+            <a href="#" class="nav-item">
+                <i class="fas fa-question-circle"></i>
+                Quizzes
+            </a>
+            <a href="#" class="nav-item">
+                <i class="fas fa-cog"></i>
+                Settings
+            </a>
+            <a href="#" class="nav-item">
+                <i class="fas fa-podcast"></i>
+                Text to Podcast
+            </a>
+            <a href="#" class="nav-item">
+                <i class="fas fa-robot"></i>
+                AI Assistant
+            </a>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Stats Section -->
+        <div class="info-box">
+            <h3><i class="fas fa-chart-line"></i>Performance Overview</h3>
+            <p>Track your learning progress with real-time statistics. This section shows your total accumulated files and active quizzes, updated automatically as you use the platform.</p>
+        </div>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-title">Total Files</div>
+                <div class="stat-value">142</div>
+                <div class="stat-meta">+12% from last month</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-title">Active Quizzes</div>
+                <div class="stat-value">23</div>
+                <div class="stat-meta">85% completion rate</div>
+            </div>
+        </div>
+
+        <!-- Files Section -->
+        <div class="info-box">
+            <h3><i class="fas fa-folder-open"></i>Document Management</h3>
+            <p>Your centralized hub for all learning materials. Easily access, organize, and download course files. Use the search feature to quickly find specific documents.</p>
+        </div>
+        <div class="file-section">
+            <div class="section-header">
+                <h2 class="section-title">Recent Files</h2>
+                <button class="download-btn">
+                    <i class="fas fa-sync"></i>
+                    Refresh
+                </button>
+            </div>
+
+            <div class="file-grid">
+                <div class="file-card">
+                    <h4>Advanced Mathematics.pdf</h4>
+                    <div class="file-meta">
+                        <span>PDF Document</span>
+                        <span>2.4 MB</span>
+                    </div>
+                    <div class="file-meta">
+                        <span>Last modified: 2d ago</span>
+                    </div>
+                    <a href="#" class="download-btn">
+                        <i class="fas fa-download"></i>
+                        Download
+                    </a>
+                </div>
+                <!-- Add more file cards -->
+            </div>
+        </div>
+
+        <!-- Quizzes Section -->
+        <div class="info-box">
+            <h3><i class="fas fa-pencil-alt"></i>Knowledge Checks</h3>
+            <p>Test your understanding with interactive quizzes. Filter available tests by topic or difficulty level, and track your completion progress over time.</p>
+        </div>
+        <div class="file-section">
+            <h2 class="section-title">Available Quizzes</h2>
+            <div class="file-grid" id="availableQuizzes">
+                <!-- Add quiz cards -->
+            </div>
+        </div>
+
+        <!-- TTS Section -->
+        <div class="info-box">
+            <h3><i class="fas fa-volume-up"></i>Audio Learning</h3>
+            <p>Convert text materials to podcast-style audio files. Upload documents in multiple formats and generate listenable content for on-the-go learning.</p>
+        </div>
+        <div class="tts-card">
+            <h2 class="section-title">Text to Podcast Converter</h2>
+            <form id="uploadForm">
+                <label class="upload-label">
+                    <i class="fas fa-file-upload" style="font-size: 2rem; color: var(--primary-red); margin-bottom: 1rem;"></i>
+                    <div style="font-size: 1.1rem; color: var(--primary-red); margin-bottom: 0.5rem;">
+                        Drag & drop files or click to upload
+                    </div>
+                    <div style="color: var(--medium-grey); font-size: 0.9rem;">
+                        Supported formats: PDF, DOC, TXT
+                    </div>
+                    <input type="file" id="fileInput" style="display: none;">
+                </label>
+
+                <button type="submit" class="download-btn" style="margin-top: 1.5rem; width: 100%; justify-content: center;">
+                    <i class="fas fa-wave-square"></i>
+                    Convert to Audio
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Add mobile menu toggle
+        document.querySelector('.menu-icon').addEventListener('click', () => {
+            document.querySelector('.sidebar').style.transform = 'translateX(0)';
+        });
+
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', (e) => {
+            if (window.innerWidth <= 768 &&
+                !e.target.closest('.sidebar') &&
+                !e.target.closest('.menu-icon')) {
+                document.querySelector('.sidebar').style.transform = 'translateX(-100%)';
+            }
+        });
+        // this is for loader graphics
+        document.addEventListener("DOMContentLoaded", function() {
+        document.getElementById("preloader").style.display = "flex";  
+    });
+
+    window.onload = function() {
+        setTimeout(() => {
+            document.getElementById("preloader").classList.add("hide");
+            setTimeout(() => {
+                document.getElementById("preloader").style.display = "none"; 
+            }, 500); // Smooth fade-out delay
+        }, 1750); // Keep the loader visible for 1.5 seconds
+    };
+    </script>
+</body>
+</html>

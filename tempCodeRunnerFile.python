@@ -1,0 +1,11 @@
+from flask import request
+
+@app.route('/user')
+def user():
+    file = request.args.get('file')  # Get the 'file' query parameter
+    if file:
+        # Handle the file parameter (e.g., display or process the file)
+        return f"File requested: {file}"
+    else:
+        # Handle the case where no file parameter is provided
+        return "No file specified."

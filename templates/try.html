@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - File Upload</title>
+    <style>
+        .file-section {
+            margin: 20px;
+        }
+        .file-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .file-item {
+            border: 1px solid #ccc;
+            padding: 10px;
+            width: 200px;
+            text-align: center;
+        }
+        .search-bar {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <section id="files">
+        <div class="file-section">
+            <h2>Uploaded Files</h2>
+            <div class="file-controls">
+                <input type="text" class="search-bar" placeholder="Search files..." onkeyup="searchFiles('uploads')">
+                <div>
+                    <!-- File Upload Form -->
+                    <form id="uploadForm" enctype="multipart/form-data">
+                        <input type="file" name="file" id="fileInput" required>
+                        <button type="button" class="btn" onclick="uploadFile()">+ New File</button>
+                    </form>
+                </div>
+            </div>
+            <div class="file-grid" id="uploadedFiles">
+                {% for file in files %}
+                    <div class="file-item">
+                        <h4>{{ file.name }}</h4>
+                        <p>Type: {{ file.type }}</p>
+                        <p>Date: {{ file.date }}</p>
+                        <p>Size: {{ file.size }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Function to upload file
+        function uploadFile() {
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+
+            if (file) {
+                const formData = new FormData();
+                formData.append('file', file);
+
+                fetch('/admin', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert(data.error);
+                    } else {
+                        // Add the new file to the list
+                        const fileGrid = document.getElementById('uploadedFiles');
+                        const fileItem = document.createElement('div');
+                        fileItem.className = 'file-item';
+                        fileItem.innerHTML = `
+                            <h4>${data.name}</h4>
+                            <p>Type: ${data.type}</p>
+                            <p>Date: ${data.date}</p>
+                            <p>Size: ${data.size}</p>
+                        `;
+                        fileGrid.appendChild(fileItem);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error uploading file:', error);
+                });
+            } else {
+                alert('Please select a file to upload.');
+            }
+        }
+
+        // Function to search files
+        function searchFiles(type) {
+            const query = event.target.value.toLowerCase();
+            const items = Array.from(document.querySelectorAll('.file-item'));
+            items.forEach(item => {
+                const name = item.querySelector('h4').textContent.toLowerCase();
+                if (name.includes(query)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</body>
+</html>
